@@ -56,8 +56,9 @@
 
 
 
+
 .line-chart .label span {
-    background-color: #fff;
+    background-color: transparent;
 }
 
 html .line-chart  .label.tooltip span {
@@ -70,7 +71,7 @@ html .line-chart  .label.tooltip span {
 
 .line-chart .label.highlighted span,
 .line-chart .label.axis span {
-    background-color: #fff;
+    background-color: transparent;
 }
 
 .line-chart .label.rotate45 {
@@ -113,6 +114,7 @@ html, body {
 }
 
 
+
 /*
  * Default Theme
  * -------------
@@ -120,18 +122,15 @@ html, body {
  */
 
 
-body, html {
-
-}
-
 a { color: #0088CC; }
 
-body.chart {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+.chart {
+    font-family: Helvetica Neue, Arial;
     font-weight: 400;
     font-size: 12px;
-    margin: 0 5px;
-    background: #fff;
+    margin: 0 0px;
+    background: transparent;
+    height: 100%;
 }
 
 h1 {
@@ -148,6 +147,10 @@ h1 span {
 a img { border:0px; }
 
 .chart p { margin: 5px 0 10px!important; line-height: 17px;}
+
+#chart, .dw-chart-body {
+    margin-top: 10px;
+}
 
 .label {
     font-size: 12px;
@@ -220,7 +223,19 @@ a img { border:0px; }
     content: ": ";
 }
 
-#footer {
+.dw-chart-notes {
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+.chart.theme-default .dw-chart-notes {
+    font-style: italic;
+    margin-bottom: 5px;
+    position: relative;
+    margin-top: 10px;
+}
+
+#footer, .dw-chart-footer {
     font-size: 11px;
     color: #888;
     /* The footer must now cover the chart to allow
@@ -230,62 +245,47 @@ a img { border:0px; }
     background:transparent;
 }
 
+.chart.theme-default .dw-chart-footer .footer-left {
+    left: 0;
+}
 
-#footer .footer-left {
+
+#footer .footer-left,
+.dw-chart-footer .footer-left {
     bottom:0;
     /* Vertical text align */
 }
 
 /* We have to break to absolute positionof the footer
-to allow absolute positioning related to the #footer
+to allow absolute positioning related to the .dw-chart-footer
 within the .toggleable-panel */
-#footer .footer-right {
+.dw-chart-footer .footer-right {
     position: absolute;
     bottom: 0;
     right: 0;
 }
 
-.footer-right .toggle-panel {
-    display:none;
-}
-
-
-.footer-right .toggle-panel:after {
-    content:" ▲";
-}
-
-/* Add a comma after the source block */
-.toggleable-panel .source-block:after {
-    content:","
-}
-
-/* This oiverlay cover the body when the toggleable panel is open */
-.toggleable-panel-overlay {
-    position:absolute;
-    bottom:0;
-    left:0;
-    right:0;
-    opacity:0;
-    background:#fff;
-    /* Bellow the stacking context to avoid overlap toggle link */
-    z-index:-1;
-
-    -moz-transition: opacity 0.7s;
-    -webkit-transition: opacity 0.7s;
-    -ms-transition: opacity 0.7s;
-    -o-transition: opacity 0.7s;
-}
 
 /* Target screens under 400px */
 @media all and (max-width: 400px) {
-    /* We must compensate the right offset
-    that we just removed by adding this distances to
-    the .toggle-panel element (that toggles the about panel).
-    We choose to user padding to enlarge the touchable area.  */
 
+    .chart .dw-chart-footer,
     .chart #footer { height: auto; }
-    .chart #footer .footer-left { position: static; }
 
+    .chart #footer .footer-left,
+    .chart .dw-chart-footer .footer-left {
+        position: static;
+    }
+
+    .chart #footer .footer-right,
+    .chart .dw-chart-footer .footer-right {
+        position:static;
+        float:none;
+        text-align:left;
+        /* Vertical text align */
+        padding: 0;
+        margin: 2px 0 0;
+    }
 }
 
 .clearfix:after {
@@ -328,31 +328,23 @@ svg .axis, svg .tick, svg .grid, svg rect {
 
 .filter-links {
     height: 30px;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
+    border-bottom: 1px solid #ccc;
 }
 
 .filter-links a {
-    padding: 0px 10px;
-    box-shadow: 0 0 10px #ddd inset;
-    border: 1px solid #bbb;
-    border-left: 0;
-    display: block;
-    float: left;
-    text-decoration: underline;
     color: #666;
     height: 28px;
     line-height: 28px;
-    background: #fbfbfb;
+    padding: 10px;
+    text-decoration: none;
 }
 
 .filter-links a:hover {
     background: #fff;
-    color: #0088CC;
+    color: #222;
 }
-
-*+html .filter-links a {  background: #eeeeee; } /** IE7 hack **/
-.filter-links a { background: #eeeeee\0/; }  /** IE8 hack **/
-
 
 .filter-links a.active {
     font-weight: bold;
@@ -361,15 +353,10 @@ svg .axis, svg .tick, svg .grid, svg rect {
     background: #fff;
     cursor: default;
     text-decoration: none;
-}
 
-.filter-links a:first-child {
-    border-radius: 10px 0 0 10px;
-    border-left: 1px solid #bbb;
-}
+    border-bottom: 3px solid #555;
+    padding: 10px 10px 6px 10px;
 
-.filter-links a:last-child {
-    border-radius: 0 10px 10px 0;
 }
 
 .filter-select {
@@ -394,5 +381,46 @@ and (max-device-width : 480px) {
         display: none!important;
     }
 }
+
+.point {
+    border: 1px solid #ccc;
+    display: inline-block;
+    position: absolute;
+    background: #fff;
+    z-index: 100;
+    cursor: pointer;
+
+    height: 20px;
+    width: 20px;
+    border-radius: 20px;
+    top: 20px;
+}
+
+.point:hover {
+    background: #ebebeb;
+}
+
+.point-label {
+    position: absolute;
+}
+
+.point.active {
+    background: #ccc;
+    height: 20px;
+    width: 20px;
+    border-radius: 20px;
+    top: 20px;
+    border-color: #888;
+}  
+
+.line {
+    height: 1px;
+    background: #ccc;
+    position: absolute;
+    left: 0px;
+    top: 30px;
+    z-index: 1;
+}
+
 
 
